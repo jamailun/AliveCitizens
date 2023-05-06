@@ -1,0 +1,32 @@
+name: AliveCitizens
+main: fr.jamailun.alivecitizens.AliveCitizens
+version: 1.0
+api-version: 1.19
+author: jamailun
+depend: [ Citizens ]
+
+commands:
+  villages.create:
+    usage: /villages.create <village_id> [radius]
+    permission: alivecitizens.*
+  villages.add:
+    usage: /villages.add <village_id> <structure_type> [args...]
+    permission: alivecitizens.*
+  villages.remove:
+    usage: /villages.add <village_id> <structure_type> <structure_id>
+    permission: alivecitizens.*
+  villages.show:
+    usage: /villages.show <village_id>
+    permission: alivecitizens.*
+  villages.status:
+    usage: /villages.status <village_id>
+    permission: alivecitizens.*
+  villages.tpto:
+    usage: /villages.tpto <village_id>
+    permission: alivecitizens.*
+
+
+permissions:
+  alivecitizens.*:
+    description: All permissions for AliveCitizens plugin
+    default: op
