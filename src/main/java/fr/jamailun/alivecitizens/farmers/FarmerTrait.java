@@ -30,10 +30,15 @@ public class FarmerTrait extends Trait {
 	private transient FarmerBehaviour behaviour = FarmerBehaviour.UNDEFINED;
 	private transient HumanEntity __self;
 	private World world;
+	private boolean isHouseValid() {
+		return house != null && house.isValid();
+	}
+	
+	
 	private HumanEntity self() {
 		if(__self == null || !__self.isValid()) {
 			if(!getNPC().isSpawned()) {
-				if(house.isValid()) {
+				if(isHouseValid()) {
 					getNPC().spawn(house.getBed().getLocation());
 				} else {
 					AliveCitizens.logError("Cannot spawn NPC " + getNPC().getName());
@@ -82,23 +87,23 @@ public class FarmerTrait extends Trait {
 		
 		switch (behaviour) {
 			case SLEEP -> {
-				if(firstTimeBehave || getWorldTime() > nextMove) {
-					nextMove = getWorldTime() + 20L * 5;
-					// if should be sleeping but is not, do it.
-					if(!sleeping && house.isValid()) {
-						// distance : if too large move to bed
-						double distance = house.getBed().getLocation().distance(self().getLocation());
-						if(distance > 2) {
+				// if should be sleeping but is not, do it.
+				if(!sleeping && isHouseValid()) {
+					// distance : if too large move to bed
+					double distance = house.getBed().getLocation().distance(self().getLocation());
+					if(distance > 2) {
+						if(firstTimeBehave || getWorldTime() > nextMove) {
+							nextMove = getWorldTime() + 20L * 5;
 							Bukkit.broadcastMessage(getNPC().getName() + " go to BED (" + NumbersUtils.formatLocation(house.getBed().getLocation()));
 							getNPC().getNavigator().setTarget(house.getBed().getLocation());
-						} else {
-							Bukkit.broadcastMessage(getNPC().getName() + " go sleep (d="+distance+") ");
-							getNPC().getNavigator().cancelNavigation();
-							if(!self().sleep(house.getBed().getLocation().clone(), true)) {
-								AliveCitizens.logError("Could not make NPC " + getNPC().getName() + " sleep.");
-							}
-							sleeping = true;
 						}
+					} else {
+						Bukkit.broadcastMessage(getNPC().getName() + " go sleep (d="+distance+") ");
+						getNPC().getNavigator().cancelNavigation();
+						if(!self().sleep(house.getBed().getLocation().clone(), true)) {
+							AliveCitizens.logError("Could not make NPC " + getNPC().getName() + " sleep.");
+						}
+						sleeping = true;
 					}
 				}
 			}

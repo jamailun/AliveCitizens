@@ -4,6 +4,7 @@ import fr.jamailun.alivecitizens.AliveCitizens;
 import fr.jamailun.alivecitizens.structures.Village;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,17 +17,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class FarmersManager {
 	
-	private final Set<FarmerTrait> farmers;
+	private final Set<FarmerTrait> farmers= new HashSet<>();
 	private final Map<String, Village> villages = new HashMap<>();
+	
+	private final Map<UUID, Village> waypointsEditors = new HashMap<>();
 	
 	private final File villagesFile;
 	private final YamlConfiguration villagesConfig;
 	
 	public FarmersManager(AliveCitizens plugin) {
-		farmers = new HashSet<>();
 		villagesFile = new File(plugin.getDataFolder(), "villages.yml");
 		villagesConfig = YamlConfiguration.loadConfiguration(villagesFile);
 		
@@ -76,6 +79,18 @@ public class FarmersManager {
 		villages.remove(village.getId());
 		villagesConfig.set(village.getId(), null);
 		save();
+	}
+	
+	public Village getEditedWaypoints(Player player) {
+		return waypointsEditors.get(player.getUniqueId());
+	}
+	
+	public void startEdit(Player player, Village village) {
+		stopEdit(player);
+		waypointsEditors.put(player.getUniqueId(), village);
+	}
+	public void stopEdit(Player player) {
+		waypointsEditors.remove(player.getUniqueId());
 	}
 	
 	public List<String> villagesIds() {

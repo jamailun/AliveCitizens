@@ -3,16 +3,16 @@ package fr.jamailun.alivecitizens.structures;
 import com.sk89q.worldedit.math.BlockVector3;
 import fr.jamailun.alivecitizens.FieldBlocksProvider;
 import fr.jamailun.alivecitizens.WorldEditFieldBlocksProvider;
+import fr.jamailun.alivecitizens.utils.Showable;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 
-public class Fields extends Structure {
+public class Fields extends Structure implements Showable {
 	
 	private final Village village;
 	private final FieldBlocksProvider blocksProvider;
@@ -33,6 +33,7 @@ public class Fields extends Structure {
 		return blocksProvider.getFieldBlocks();
 	}
 	
+	@Override
 	public void showPlayer(Player target) {
 		blocksProvider.showPlayer(target);
 	}

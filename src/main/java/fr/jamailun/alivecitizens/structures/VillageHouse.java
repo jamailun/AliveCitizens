@@ -3,6 +3,7 @@ package fr.jamailun.alivecitizens.structures;
 import fr.jamailun.alivecitizens.AliveCitizens;
 import fr.jamailun.alivecitizens.farmers.FarmerTrait;
 import fr.jamailun.alivecitizens.utils.ParticlesPlayer;
+import fr.jamailun.alivecitizens.utils.Showable;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VillageHouse extends Structure {
+public class VillageHouse extends Structure implements Showable {
 	
 	private final transient Village village;
 	private final Block bed;
@@ -76,6 +77,7 @@ public class VillageHouse extends Structure {
 		return new VillageHouse(village, id, bed);
 	}
 	
+	@Override
 	public void showPlayer(Player target) {
 		if(!valid) return;
 		ParticlesPlayer.playCircleXZ(target, bed.getLocation(), 6, Math.toRadians(12), Particle.HEART);

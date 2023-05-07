@@ -4,6 +4,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import fr.jamailun.alivecitizens.utils.ParticlesPlayer;
+import fr.jamailun.alivecitizens.utils.Showable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -18,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class WorldEditFieldBlocksProvider implements FieldBlocksProvider {
+public class WorldEditFieldBlocksProvider implements FieldBlocksProvider, Showable {
 	
 	private List<Block> fields = null;
 	private final World world;
@@ -85,6 +86,7 @@ public class WorldEditFieldBlocksProvider implements FieldBlocksProvider {
 		return new WorldEditFieldBlocksProvider(Bukkit.getWorld(worldName), min, max);
 	}
 	
+	@Override
 	public void showPlayer(Player target) {
 		ParticlesPlayer.playBox(target, minLoc, maxLoc, 0.2, Particle.NOTE);
 	}

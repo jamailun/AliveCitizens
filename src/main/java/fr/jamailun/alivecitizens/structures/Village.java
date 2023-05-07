@@ -1,18 +1,20 @@
 package fr.jamailun.alivecitizens.structures;
 
 import fr.jamailun.alivecitizens.AliveCitizens;
+import fr.jamailun.alivecitizens.navigation.WaypointsGrid;
 import fr.jamailun.alivecitizens.utils.NumbersUtils;
 import fr.jamailun.alivecitizens.utils.ParticlesPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +27,18 @@ public class Village extends Structure {
 	private final List<Fields> fields = new ArrayList<>();
 	private final List<VillageHouse> houses = new ArrayList<>();
 	
-	private Village(String uuid, @NotNull VillagePlace place) {
+	private final WaypointsGrid grid;
+	
+	private Village(String uuid, @NotNull VillagePlace place, WaypointsGrid grid) {
 		super(uuid);
 		this.place = place;
+		this.grid = grid;
 	}
 	
 	public Village(@NotNull String id, Location center, double radius) {
 		super(id);
 		this.place = new VillagePlace(center, radius);
+		this.grid = new WaypointsGrid(Collections.emptyList());
 	}
 	
 	public @NotNull String getId() {
@@ -63,11 +69,26 @@ public class Village extends Structure {
 		return houses.stream().filter(h -> h.getUuid().equals(id)).findFirst().orElse(null);
 	}
 	
+	public boolean isWaypoint(Block block) {
+		return grid.contains(block);
+	}
+	
+	public void addWaypoint(Block block) {
+		grid.add(block);
+	}
+	
+	public void removeWaypoint(Block block) {
+		grid.remove(block);
+	}
+	
+	
+	
 	@Override
 	public @NotNull Map<String, Object> serialize() {
 		return new HashMap<>() {{
 			put("uuid", uuid);
 			put("place", place);
+			put("waypoints", grid.serialize());
 			put("houses", houses.stream().map(VillageHouse::serialize).toList());
 			put("fields", fields.stream().map(Fields::serialize).toList());
 		}};
@@ -79,7 +100,8 @@ public class Village extends Structure {
 		// Village
 		String id = (String) map.get("uuid");
 		VillagePlace place = (VillagePlace) map.get("place");
-		Village village = new Village(id, place);
+		List<String> waypoints = (List<String>) map.get("waypoints");
+		Village village = new Village(id, place, new WaypointsGrid(waypoints));
 		
 		// Fields
 		List<Map<String, Object>> fieldsList = (List<Map<String, Object>>) map.get("fields");
@@ -138,6 +160,8 @@ public class Village extends Structure {
 			// place center
 			ParticlesPlayer.playCircleXZ(player, getPlace().getCenter(), getPlace().getRadius(), Math.toRadians(2), Particle.FLAME);
 			ParticlesPlayer.playCircleXZ(player, getPlace().getCenter(), 1, Math.toRadians(6), Particle.DRAGON_BREATH);
+			// waypoints
+			grid.showPlayer(player);
 			// Houses
 			houses.forEach(h -> {
 				if(h.isValid()) {
