@@ -1,5 +1,6 @@
 package fr.jamailun.alivecitizens;
 
+import fr.jamailun.alivecitizens.commands.VillageSetCenterCommand;
 import fr.jamailun.alivecitizens.commands.VillagesAddCommand;
 import fr.jamailun.alivecitizens.commands.VillagesCreateCommand;
 import fr.jamailun.alivecitizens.commands.VillagesRemoveCommand;
@@ -16,6 +17,7 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AliveCitizens extends JavaPlugin {
@@ -54,9 +56,10 @@ public class AliveCitizens extends JavaPlugin {
 		// Commands
 		new VillagesCreateCommand(this);
 		new VillagesAddCommand   (this);
+		new VillagesRemoveCommand(this);
 		new VillagesShowCommand  (this);
 		new VillagesStatusCommand(this);
-		new VillagesRemoveCommand(this);
+		new VillageSetCenterCommand(this);
 	}
 	
 	public FarmersManager getFarmersManager() {

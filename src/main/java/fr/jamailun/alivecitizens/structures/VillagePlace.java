@@ -20,7 +20,7 @@ public class VillagePlace implements ConfigurationSerializable {
 	}
 	
 	public Location getCenter() {
-		return center;
+		return center.clone();
 	}
 	
 	public void setCenter(Location center) {

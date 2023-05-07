@@ -1,6 +1,8 @@
 package fr.jamailun.alivecitizens.utils;
 
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -17,7 +19,9 @@ public final class NumbersUtils {
 	public final static DecimalFormat FORMAT_2 = new DecimalFormat("0.##", SYMBOLS);
 	public final static DecimalFormat FORMAT_4 = new DecimalFormat("0.####", SYMBOLS);
 
-	public static String formatLocation(Location loc) {
+	public static @NotNull String formatLocation(@Nullable Location loc) {
+		if(loc == null)
+			return "";
 		return "(" + FORMAT_1.format(loc.getX()) + ", " + FORMAT_1.format(loc.getY()) + ", " + FORMAT_1.format(loc.getZ()) + ")";
 	}
 	

@@ -2,7 +2,9 @@ package fr.jamailun.alivecitizens.farmers;
 
 import fr.jamailun.alivecitizens.AliveCitizens;
 import fr.jamailun.alivecitizens.structures.Village;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,6 +31,11 @@ public class FarmersManager {
 		villagesConfig = YamlConfiguration.loadConfiguration(villagesFile);
 		
 		reloadData();
+		
+		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+			//Bukkit.broadcastMessage("update farmers");
+			farmers.forEach(FarmerTrait::updateBehaviour);
+		}, 60, 20*10);
 	}
 	
 	public void reloadData() {
