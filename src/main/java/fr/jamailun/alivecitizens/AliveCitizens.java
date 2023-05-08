@@ -6,8 +6,10 @@ import fr.jamailun.alivecitizens.commands.VillagesCreateCommand;
 import fr.jamailun.alivecitizens.commands.VillagesRemoveCommand;
 import fr.jamailun.alivecitizens.commands.VillagesShowCommand;
 import fr.jamailun.alivecitizens.commands.VillagesStatusCommand;
+import fr.jamailun.alivecitizens.commands.VillagesWaypointsCommand;
 import fr.jamailun.alivecitizens.farmers.FarmerTrait;
 import fr.jamailun.alivecitizens.farmers.FarmersManager;
+import fr.jamailun.alivecitizens.listeners.InteractListener;
 import fr.jamailun.alivecitizens.structures.Fields;
 import fr.jamailun.alivecitizens.structures.Village;
 import fr.jamailun.alivecitizens.structures.VillagePlace;
@@ -17,7 +19,6 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AliveCitizens extends JavaPlugin {
@@ -60,6 +61,10 @@ public class AliveCitizens extends JavaPlugin {
 		new VillagesShowCommand  (this);
 		new VillagesStatusCommand(this);
 		new VillageSetCenterCommand(this);
+		new VillagesWaypointsCommand(this);
+		
+		// listeners
+		new InteractListener(this);
 	}
 	
 	public FarmersManager getFarmersManager() {

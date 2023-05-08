@@ -1,5 +1,6 @@
 package fr.jamailun.alivecitizens.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -36,6 +37,10 @@ public final class ParticlesPlayer {
 					0 // speed
 			);
 		}
+	}
+	
+	public static void playLine(Location a, Location b, double delta, Particle particle) {
+		Bukkit.getOnlinePlayers().forEach(p -> playLine(p, a, b, delta, particle));
 	}
 	
 	public static void playBox(Player target, Location min, Location max, double delta, Particle particle) {

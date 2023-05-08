@@ -2,14 +2,19 @@ package fr.jamailun.alivecitizens.navigation;
 
 import fr.jamailun.alivecitizens.utils.NumbersUtils;
 import fr.jamailun.alivecitizens.utils.Pair;
+import fr.jamailun.alivecitizens.utils.ParticlesPlayer;
+import fr.jamailun.alivecitizens.utils.Showable;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Waypoint {
+public class Waypoint implements Showable {
 	
 	private final WaypointsGrid grid;
 	private final Location location;
@@ -22,6 +27,7 @@ public class Waypoint {
 	}
 	
 	void tryConnectWith(Waypoint waypoint) {
+		String debug = NumbersUtils.formatLocation(location) + " <-> " + NumbersUtils.formatLocation(waypoint.location);
 		if(distance(waypoint) > grid.getMaxDistance() || grid.isBlockedByBlock(location, waypoint.location)) {
 			return;
 		}
@@ -62,5 +68,17 @@ public class Waypoint {
 	@Override
 	public int hashCode() {
 		return Objects.hash(location);
+	}
+	
+	@Override
+	public void showPlayer(Player target) {
+		target.spawnParticle(
+				Particle.ELECTRIC_SPARK,
+				location.getX(), location.getY(), location.getZ(),
+				1,
+				0, 0, 0,
+				0
+		);
+		
 	}
 }

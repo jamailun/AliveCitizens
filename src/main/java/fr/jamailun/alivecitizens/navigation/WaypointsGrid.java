@@ -1,8 +1,10 @@
 package fr.jamailun.alivecitizens.navigation;
 
+import fr.jamailun.alivecitizens.AliveCitizens;
 import fr.jamailun.alivecitizens.utils.NumbersUtils;
 import fr.jamailun.alivecitizens.utils.ParticlesPlayer;
 import fr.jamailun.alivecitizens.utils.Showable;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -15,14 +17,15 @@ import java.util.List;
 import java.util.Set;
 
 public class WaypointsGrid implements Showable {
-	private final static Vector BLOCK_DELTA = new Vector(0.5, 0, 0.5);
+	private final static Vector BLOCK_DELTA = new Vector(0.5, 1.1, 0.5);
 	
 	private final Set<Waypoint> nodes = new HashSet<>();
 	
 	public WaypointsGrid(List<String> data) {
 		data.stream().map(NumbersUtils::deserializeVectorBlockMiddle)
 				.map(l -> new Waypoint(this, l))
-				.forEach(nodes::add);
+				.forEach(this::registerNewWaypoint);
+		AliveCitizens.log("Loaded " + nodes.size() + " nodes.");
 	}
 	
 	public @NotNull List<String> serialize() {
@@ -36,27 +39,41 @@ public class WaypointsGrid implements Showable {
 		return nodes.stream().anyMatch(w -> w.getLocation().equals(loc));
 	}
 	
-	public void add(Block block) {
-		Location loc = block.getLocation().add(BLOCK_DELTA);
-		Waypoint wp = new Waypoint(this, loc);
+	private void registerNewWaypoint(Waypoint wp) {
 		for(Waypoint present : nodes) {
 			present.tryConnectWith(wp);
 		}
 		nodes.add(wp);
 	}
 	
-	public void remove(Block block) {
+	public Location add(Block block) {
+		String a = NumbersUtils.formatLocation(block.getLocation());
+		Location loc = block.getLocation().add(BLOCK_DELTA);
+		String b = NumbersUtils.formatLocation(loc);
+		
+		Bukkit.broadcastMessage(a + " -> " + b);
+		
+		Waypoint wp = new Waypoint(this, loc);
+		registerNewWaypoint(wp);
+		
+		return loc.clone();
+	}
+	
+	public Location remove(Block block) {
 		Location loc = block.getLocation().add(BLOCK_DELTA);
 		Waypoint wp = nodes.stream().filter(w -> w.getLocation().equals(loc)).findFirst().orElse(null);
 		if(wp == null) {
 			//
-			return;
+			return loc;
 		}
 		wp.delete(); // remove all connections
 		nodes.remove(wp);
+		return loc;
 	}
 	
 	boolean isBlockedByBlock(Location source, Location dest) {
+		ParticlesPlayer.playLine(source.clone(), dest.clone(), 0.2, Particle.END_ROD);
+		
 		final double delta = 0.5;
 		Vector dir = dest.toVector().subtract(source.toVector()).normalize().multiply(delta);
 		double distance = dest.distance(source);
@@ -76,6 +93,8 @@ public class WaypointsGrid implements Showable {
 	
 	@Override
 	public void showPlayer(Player target) {
+		nodes.forEach(n -> n.showPlayer(target));
+		
 		nodes.stream()
 				.flatMap(n -> n.getPairs().stream())
 				.distinct()

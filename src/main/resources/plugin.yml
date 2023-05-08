@@ -27,6 +27,9 @@ commands:
   villages.tp:
     usage: /villages.tp <village_id>
     permission: alivecitizens.*
+  villages.edit-waypoints:
+    usage: /villages.edit-waypoints [village_id]
+    permission: alivecitizens.*
 
 
 permissions:

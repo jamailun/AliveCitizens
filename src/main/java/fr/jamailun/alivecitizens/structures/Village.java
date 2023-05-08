@@ -73,12 +73,12 @@ public class Village extends Structure {
 		return grid.contains(block);
 	}
 	
-	public void addWaypoint(Block block) {
-		grid.add(block);
+	public Location addWaypoint(Block block) {
+		return grid.add(block);
 	}
 	
-	public void removeWaypoint(Block block) {
-		grid.remove(block);
+	public Location removeWaypoint(Block block) {
+		return grid.remove(block);
 	}
 	
 	
